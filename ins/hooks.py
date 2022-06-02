@@ -174,7 +174,7 @@ user_data_fields = [
 
 doc_events = {
    "Sales Invoice" : {
-		"before_save": "ins.ins.custom_scripts.sales_invoice.set_custom_name",
+		"before_save": "ins.custom_scripts.sales_invoice.before_save",
 		
 	},
 }
