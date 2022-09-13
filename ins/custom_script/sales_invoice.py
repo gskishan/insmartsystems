@@ -8,7 +8,7 @@ def before_save(doc, method=None):
 
 def set_name(doc):
 		old_doc = doc.get_doc_before_save()
-		if old_doc == None:
+		if old_doc == None and 'param'in doc.naming_series:
 			#print(f"""\n\n\n\n{doc.name}\n\\n\n""")
 			series = re.findall(r'\d+',doc.name)[0]
 			month=re.findall(r'\d+',utils.today())[1]
