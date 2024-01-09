@@ -181,8 +181,8 @@ doc_events = {
 		
 	},
     "Quotation": {
-		"before_submit":  "ins.custom_script.quotation.quotation.before_submit",
-		"on_cancel":  "ins.custom_script.quotation.quotation.on_cancel",
+		"before_submit":  "ins.custom_script.quotation.before_submit",
+		"on_cancel":  "ins.custom_script.quotation.on_cancel",
 	},
 }
 # Authentication and authorization
