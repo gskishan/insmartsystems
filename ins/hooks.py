@@ -180,6 +180,10 @@ doc_events = {
 		"before_save": "ins.custom_script.sales_invoice.before_save",
 		
 	},
+    "Quotation": {
+		"before_submit":  "ins.custom_script.quotation.quotation.before_submit",
+		"on_cancel":  "ins.custom_script.quotation.quotation.on_cancel",
+	},
 }
 # Authentication and authorization
 # --------------------------------
