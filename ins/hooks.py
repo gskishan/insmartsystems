@@ -199,3 +199,13 @@ doc_events = {
 # Recommended only for DocTypes which have limited documents with untranslated names
 # For example: Role, Gender, etc.
 # translated_search_doctypes = []
+
+fixtures=[
+	"Custom Field",
+	"Property Setter",
+	"Client Script",
+	"Server Script",
+	"Print Format",
+	"Report",
+	"Workspace"
+]
