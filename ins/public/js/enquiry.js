@@ -64,4 +64,9 @@ frappe.ui.form.on("Enquiry", {
         }
 
     },
+
+    lead: async function (frm) {
+        let lead = await frappe.db.get_doc('Lead', frm.doc.lead);
+        frm.set_value('probability', lead.custom_probability);
+    },
 })
