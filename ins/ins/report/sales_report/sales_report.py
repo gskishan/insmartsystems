@@ -120,8 +120,8 @@ def get_data(filters= None):
 	result = []
 	
 	resultant_leads = get_leads(customer,from_date, to_date)
-	resultant_enquiry = get_enquiry(customer, from_date, to_date)
-	resultant_quotation = get_quotations(customer, from_date, to_date)
+	resultant_enquiry = get_enquiry()
+	resultant_quotation = get_quotations()
 	
 	total_amount = 0
 	# Loop All Leads if it matches then update the row
@@ -209,17 +209,10 @@ def get_leads(customer, from_date, to_date):
 
 
 
-def get_enquiry(customer, from_date, to_date):
-
-	filters={}
-	if customer:
-		filters['customer'] = customer
-	if from_date and to_date:
-		filters["transaction_date"] = ["between", [from_date, to_date]]
+def get_enquiry():
 
 	# Get Enquiry
 	enquiry = frappe.db.get_all('Enquiry',
-		filters=filters,
 		fields=['name','customer'],
 	)
 
@@ -249,13 +242,7 @@ def get_enquiry(customer, from_date, to_date):
 
 
 
-def get_quotations(customer, from_date, to_date):
-
-	filters={}
-	if customer:
-		filters['party_name'] = customer
-	if from_date and to_date:
-		filters["transaction_date"] = ["between", [from_date, to_date]]
+def get_quotations():
 
 	# Get Quotation
 	quotations = frappe.db.get_all('Quotation',

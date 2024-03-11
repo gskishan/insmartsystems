@@ -108,8 +108,8 @@ def get_data(filters= None):
 	result = []
 	
 	resultant_leads = get_leads(customer,from_date, to_date)
-	resultant_enquiry = get_enquiry(customer, from_date, to_date)
-	resultant_quotation = get_quotations(customer, from_date, to_date)
+	resultant_enquiry = get_enquiry()
+	resultant_quotation = get_quotations()
 	
 	# Loop All Leads if it matches then update the row
 	for each_lead in resultant_leads:
@@ -152,13 +152,16 @@ def get_data(filters= None):
 
 def get_leads(customer, from_date, to_date):
 
+	filters={}
+	if customer:
+		filters['og_name'] = customer
+	if from_date and to_date:
+		filters["enquiry_date"] = ["between", [from_date, to_date]]
+
 	# Get Lead
 	leads = frappe.db.get_all('Lead',
-		filters={
-			'og_name': customer, 
-			"enquiry_date": ["between", [from_date, to_date]], 
-		},
-		fields=['name'],
+		filters=filters,
+		fields=['name', 'og_name'],
 	)
 
 	result = []
@@ -167,6 +170,7 @@ def get_leads(customer, from_date, to_date):
 		
 		for each_item in each_lead.items: 
 			row={}
+			row["customer"] =  each.og_name 
 			row["lead_id"] =  each.name 
 			row["item_code"] = each_item.item_code 
 			row["item"] = each_item.item_name
@@ -184,16 +188,11 @@ def get_leads(customer, from_date, to_date):
 
 
 
-def get_enquiry(customer, from_date, to_date):
+def get_enquiry():
 
 	# Get Enquiry
 	enquiry = frappe.db.get_all('Enquiry',
-		filters={
-			'customer': customer, 
-			"transaction_date": ["between", [from_date, to_date]],
-			
-		},
-		fields=['name'],
+		fields=['name','customer'],
 	)
 
 	result = []
@@ -201,6 +200,7 @@ def get_enquiry(customer, from_date, to_date):
 		each_enq= frappe.get_doc("Enquiry", each.name)
 		for each_item in each_enq.items:
 			row = {}
+			row["customer"] =  each.customer 
 			row["enquiry_id"] = each.name
 			row["item_code"] = each_item.item_code 
 			row["item"] = each_item.item_name
@@ -219,16 +219,11 @@ def get_enquiry(customer, from_date, to_date):
 
 
 
-def get_quotations(customer, from_date, to_date):
+def get_quotations():
 
 	# Get Quotation
 	quotations = frappe.db.get_all('Quotation',
-		filters={
-			'party_name': customer,
-			"transaction_date": ["between", [from_date, to_date]], 
-
-		},
-		fields=['name'],
+		fields=['name','party_name'],
 	)
 
 	result = []
@@ -236,6 +231,7 @@ def get_quotations(customer, from_date, to_date):
 		each_quotation = frappe.get_doc("Quotation", each.name)
 		for item in each_quotation.items:
 			row = {}
+			row["customer"] =  each.party_name 
 			row["quotation_id"] = each.name
 			row["item_code"] = item.item_code
 			row["item"] = item.item_name
