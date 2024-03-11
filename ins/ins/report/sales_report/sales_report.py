@@ -85,6 +85,12 @@ def get_columns(filters= None):
 			"width": 80,
 		},
 		{
+			"label": _("Amount"),
+			"fieldname": "amount",
+			"fieldtype": "Currency",
+			"width": 80,
+		},
+		{
             "label": _("Probability"),
             "fieldname": "probability",
             "fieldtype": "Data",
@@ -117,6 +123,7 @@ def get_data(filters= None):
 	resultant_enquiry = get_enquiry(customer, from_date, to_date)
 	resultant_quotation = get_quotations(customer, from_date, to_date)
 	
+	total_amount = 0
 	# Loop All Leads if it matches then update the row
 	for each_lead in resultant_leads:
 		row = {
@@ -131,6 +138,7 @@ def get_data(filters= None):
 				'item_group': '', 
 				'qty': 0, 
 				'rate': 0, 
+				'amount': 0,
 				'probability': '', 
 				'link_lead': '',
 				'link_enquiry': '',
@@ -152,20 +160,27 @@ def get_data(filters= None):
 						row.update(each_quotation)
 
 		result.append(row)
-	
+		total_amount += row["amount"]
+	result.append({
+			'customer': "Total Amount", 
+			'amount': total_amount
+		})
 	return result
 
 
 
 def get_leads(customer, from_date, to_date):
 
+	filters={}
+	if customer:
+		filters['og_name'] = customer
+	if from_date and to_date:
+		filters["enquiry_date"] = ["between", [from_date, to_date]]
+
 	# Get Lead
 	leads = frappe.db.get_all('Lead',
-		filters={
-			'og_name': customer, 
-			"enquiry_date": ["between", [from_date, to_date]], 
-		},
-		fields=['name'],
+		filters=filters,
+		fields=['name', 'og_name'],
 	)
 
 	result = []
@@ -174,12 +189,14 @@ def get_leads(customer, from_date, to_date):
 		
 		for each_item in each_lead.items: 
 			row={}
+			row["customer"] =  each.og_name 
 			row["lead_id"] =  each.name 
 			row["item_code"] = each_item.item_code 
 			row["item"] = each_item.item_name 
 			row["item_group"] = each_item.item_group 
 			row["qty"] = each_item.qty 
 			row["rate"] = each_item.rate 
+			row["amount"] = each_item.amount
 			row["expected_order_date"] = each_lead.expected_order_date 
 			row["probability"] = each_lead.probability 
 			row["place"] = each_lead.place 
@@ -194,14 +211,16 @@ def get_leads(customer, from_date, to_date):
 
 def get_enquiry(customer, from_date, to_date):
 
+	filters={}
+	if customer:
+		filters['customer'] = customer
+	if from_date and to_date:
+		filters["transaction_date"] = ["between", [from_date, to_date]]
+
 	# Get Enquiry
 	enquiry = frappe.db.get_all('Enquiry',
-		filters={
-			'customer': customer, 
-			"transaction_date": ["between", [from_date, to_date]],
-			
-		},
-		fields=['name'],
+		filters=filters,
+		fields=['name','customer'],
 	)
 
 	result = []
@@ -209,12 +228,14 @@ def get_enquiry(customer, from_date, to_date):
 		each_enq= frappe.get_doc("Enquiry", each.name)
 		for each_item in each_enq.items:
 			row = {}
+			row["customer"] =  each.customer 
 			row["enquiry_id"] = each.name
 			row["item_code"] = each_item.item_code 
 			row["item"] = each_item.item_name
 			row["item_group"] = each_item.item_group
 			row["qty"] = each_item.qty
 			row["rate"] = each_item.rate
+			row["amount"] = each_item.amount
 			row["link_lead"] = each_enq.lead 
 			row["status"] = each_enq.enquiry_status 
 			row["expected_order_date"] = each_enq.expected_order_date 
@@ -230,14 +251,16 @@ def get_enquiry(customer, from_date, to_date):
 
 def get_quotations(customer, from_date, to_date):
 
+	filters={}
+	if customer:
+		filters['party_name'] = customer
+	if from_date and to_date:
+		filters["transaction_date"] = ["between", [from_date, to_date]]
+
 	# Get Quotation
 	quotations = frappe.db.get_all('Quotation',
-		filters={
-			'party_name': customer,
-			"transaction_date": ["between", [from_date, to_date]], 
-
-		},
-		fields=['name'],
+		filters=filters,
+		fields=['name','party_name'],
 	)
 
 	result = []
@@ -245,12 +268,14 @@ def get_quotations(customer, from_date, to_date):
 		each_quotation = frappe.get_doc("Quotation", each.name)
 		for item in each_quotation.items:
 			row = {}
+			row["customer"] =  each.party_name 
 			row["quotation_id"] = each.name
 			row["item_code"] = item.item_code
 			row["item"] = item.item_name
 			row["item_group"] = item.item_group # Need to add this Field fetch it from Item
 			row["qty"] = item.qty
 			row["rate"] = item.rate
+			row["amount"] = item.amount
 			row["link_enquiry"] = each_quotation.enquiry 
 			row["status"] = each_quotation.status 
 			row["expected_order_date"] = each_quotation.valid_till 
