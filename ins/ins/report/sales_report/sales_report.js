@@ -13,7 +13,7 @@ frappe.query_reports["Sales Report"] = {
 			fieldname:"from_date",
 			label: __("Start Date"),
 			fieldtype: "Date",
-			default: frappe.datetime.add_months(frappe.datetime.nowdate(), -12),
+			default: frappe.datetime.add_months(frappe.datetime.nowdate(), -1),
 		},
 		{
 			fieldname:"to_date",
