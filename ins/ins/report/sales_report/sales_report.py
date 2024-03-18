@@ -162,9 +162,9 @@ def get_data(filters= None):
 		result.append(row)
 		total_amount += row["amount"]
 	result.append({
-			'customer': "Total Amount", 
-			'amount': total_amount
-		})
+		'customer': "Total Amount", 
+		'amount': total_amount
+	})
 	return result
 
 
@@ -246,7 +246,6 @@ def get_quotations():
 
 	# Get Quotation
 	quotations = frappe.db.get_all('Quotation',
-		filters=filters,
 		fields=['name','party_name'],
 	)
 
