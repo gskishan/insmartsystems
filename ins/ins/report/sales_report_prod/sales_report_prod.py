@@ -141,8 +141,16 @@ def get_data(filters= None):
 				
 				# Check for Linked Quotation if it matches then update the row
 				for each_quotation in resultant_quotation:
-					if each_enquiry["enquiry_id"] == each_quotation["link_enquiry"] and each_enquiry["item_code"] == each_quotation["item_code"]:
-						row.update(each_quotation)
+					if each_quotation["amended_from"]:
+						if each_enquiry["enquiry_id"] == each_quotation["link_enquiry"] and each_enquiry["item_code"] == each_quotation["item_code"]:
+							row.update(each_quotation)
+							amended_quotation = each_quotation
+					else:
+						if each_enquiry["enquiry_id"] == each_quotation["link_enquiry"] and each_enquiry["item_code"] == each_quotation["item_code"]:
+							row.update(each_quotation)
+
+				if amended_quotation:
+					row.update(amended_quotation)
 
 		result.append(row)
 	
@@ -223,7 +231,7 @@ def get_quotations():
 
 	# Get Quotation
 	quotations = frappe.db.get_all('Quotation',
-		fields=['name','party_name'],
+		fields=['name','party_name', 'amended_from'],
 	)
 
 	result = []
@@ -241,6 +249,7 @@ def get_quotations():
 			row["status"] = each_quotation.status 
 			row["expected_order_date"] = each_quotation.valid_till 
 			row["probability"] = each_quotation.probability 
+			row["amended_from"] = each.amended_from
 
 			result.append(row)
 
