@@ -141,7 +141,7 @@ def get_data(filters= None):
 				
 				# Check for Linked Quotation if it matches then update the row
 				for each_quotation in resultant_quotation:
-					if each_quotation["amended_from"]:
+					if each_quotation["amended_from"] and each_quotation["status"] != "Cancelled":
 						if each_enquiry["enquiry_id"] == each_quotation["link_enquiry"] and each_enquiry["item_code"] == each_quotation["item_code"]:
 							row.update(each_quotation)
 							amended_quotation = each_quotation
