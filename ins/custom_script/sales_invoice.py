@@ -18,5 +18,16 @@ def set_name(doc):
 			type = doc.type
 
 			for data in doc.items:
-				data.parent= st_year+ed_year+type+month+vertical+series
-			doc.name = st_year+ed_year+type+month+vertical+series
+				company = ""
+				if doc.company == "insmart Systems":
+					company = 1
+				
+				elif doc.company == "insmart Systems India Private Limited":
+					company = 2
+
+				
+				elif doc.company == "OIA TECHNOLOGIES PRIVATE LIMITED":
+					company = 3
+					
+				data.parent= st_year+ed_year+type+month+vertical+company+series
+			doc.name = st_year+ed_year+type+month+vertical+company+series
