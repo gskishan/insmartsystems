@@ -40,6 +40,10 @@ def validate(self, method=None):
                 self.sequence = 1	
         except Exception as e:
             frappe.log_error(f"Error setting  sequence: {str(e)}")
+    if self.is_new() and 'param' not in self.naming_series:
+        self.sequence = 0
+
+    
 
 def autoname(doc, method=None):
     set_name(doc)
