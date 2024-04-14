@@ -15,7 +15,7 @@ ORDER BY
     company, creation;"""
     for d in frappe.db.sql(sql,as_dict=True):
         si=frappe.get_doc("Sales Invoice",d.name)
-        si.db_set("sequence",0)
+        si.db_set("naming_series",0)
 
 def get_year(posting_date):
     import datetime
@@ -27,20 +27,20 @@ def get_year(posting_date):
 def validate(self, method=None):
     if self.is_new() and 'param' in self.naming_series:
         try:
-            sql = """SELECT sequence
+            sql = """SELECT naming_series
                     FROM `tab{0}`
-                    WHERE company=%s AND sequence IS NOT NULL and  YEAR(creation) =%s and naming_series like %s
+                    WHERE company=%s AND naming_series IS NOT NULL and  YEAR(creation) =%s and naming_series like %s
                     ORDER BY creation DESC
                     LIMIT 1""".format(self.doctype)
         
             last_count = frappe.db.sql(sql, (self.company,get_year(self.posting_date),self.naming_series), as_dict=False)
             last_count = last_count[0][0] if last_count else None
             if last_count is not None:
-                self.sequence = last_count + 1
+                self.naming_series = last_count + 1
             else:
-                self.sequence = 1	
+                self.naming_series = 1	
         except Exception as e:
-            frappe.log_error(f"Error setting  sequence: {str(e)}")
+            frappe.log_error(f"Error setting  naming_series: {str(e)}")
 
 def autoname(doc, method=None):
     set_name(doc)
@@ -58,15 +58,15 @@ def set_name(doc):
             company_code = "20000"
         elif doc.company == "OIA TECHNOLOGIES PRIVATE LIMITED":
             company_code = '30000'
-        sql = """SELECT MAX(sequence)
+        sql = """SELECT MAX(naming_series)
                     FROM `tab{0}`
-                    WHERE company=%s AND sequence IS NOT NULL""".format(doc.doctype)
+                    WHERE company=%s AND naming_series IS NOT NULL""".format(doc.doctype)
         max_icv = frappe.db.sql(sql, (doc.company,), as_dict=False)[0][0]
         if max_icv is not None:
-            sequence = max_icv + 1
+            naming_series = max_icv + 1
         else:
-            sequence = 1
-        last_number=int(company_code) + sequence
+            naming_series = 1
+        last_number=int(company_code) + naming_series
     
         if last_number == 0:
             last_number = int(company_code) + 1
