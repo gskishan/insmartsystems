@@ -29,11 +29,11 @@ def validate(self, method=None):
         try:
             sql = """SELECT sequence
                     FROM `tab{0}`
-                    WHERE company=%s AND sequence IS NOT NULL and  YEAR(creation) =%s and naming_series like %s
+                    WHERE company=%s AND sequence IS NOT NULL and  YEAR(creation) =%s
                     ORDER BY creation DESC
                     LIMIT 1""".format(self.doctype)
         
-            last_count = frappe.db.sql(sql, (self.company,get_year(self.posting_date),self.naming_series), as_dict=False)
+            last_count = frappe.db.sql(sql, (self.company,get_year(self.posting_date)), as_dict=False)
             last_count = last_count[0][0] if last_count else None
             frappe.errprint(last_count)
             if last_count is not None:
