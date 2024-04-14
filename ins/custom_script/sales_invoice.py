@@ -45,7 +45,6 @@ def autoname(doc, method=None):
     set_name(doc)
 
 def set_name(doc):
-    frappe.errprint("inma")
     if 'param' in doc.naming_series:
         frappe.errprint("in")
         year=frappe.defaults.get_global_default('fiscal_year')
@@ -73,5 +72,4 @@ def set_name(doc):
             last_number = int(company_code) + 1
 
         doc.name = year + type + month + vertical + str(last_number)
-        frappe.errprint(doc.name)
 
