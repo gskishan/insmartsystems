@@ -35,7 +35,6 @@ def validate(self, method=None):
         
             last_count = frappe.db.sql(sql, (self.company,get_year(self.posting_date)), as_dict=False)
             last_count = last_count[0][0] if last_count else None
-            frappe.errprint(last_count)
             if last_count is not None:
                 self.sequence = last_count + 1
             else:
@@ -73,5 +72,4 @@ def set_name(doc):
             last_number = int(company_code) + 1
 
         doc.name = year + type + month + vertical + str(last_number)
-         frappe.errprint(doc.name )
 
