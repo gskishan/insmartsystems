@@ -53,11 +53,11 @@ def set_name(doc):
         type = doc.type
         company_code = ""
         if doc.company == "insmart Systems":
-            company_code = "100000"
+            company_code = "10000"
         elif doc.company == "insmart Systems India Private Limited":
-            company_code = "200000"
+            company_code = "20000"
         elif doc.company == "OIA TECHNOLOGIES PRIVATE LIMITED":
-            company_code = '300000'
+            company_code = '30000'
         sql = """SELECT MAX(sequence)
                     FROM `tab{0}`
                     WHERE company=%s AND sequence IS NOT NULL""".format(doc.doctype)
