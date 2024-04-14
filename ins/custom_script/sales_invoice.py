@@ -28,10 +28,11 @@ def validate(self, method=None):
     if self.is_new() and 'param' in self.naming_series:
         try:
             sql = """SELECT sequence
-                    FROM `tab{0}`
+                    FROM `tabSales Invoice`
                     WHERE company=%s AND sequence IS NOT NULL and  YEAR(creation) =%s
                     ORDER BY creation DESC
                     LIMIT 1""".format(self.doctype)
+            frappe.errprint([self.company,get_year(self.posting_date)])
         
             last_count = frappe.db.sql(sql, (self.company,get_year(self.posting_date)), as_dict=False)
             last_count = last_count[0][0] if last_count else None
