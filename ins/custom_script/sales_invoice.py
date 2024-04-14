@@ -46,7 +46,6 @@ def autoname(doc, method=None):
 
 def set_name(doc):
     if 'param' in doc.naming_series:
-        frappe.errprint("in")
         year=frappe.defaults.get_global_default('fiscal_year')
         month = re.findall(r'\d+', utils.today())[1]
         vertical = doc.vertical
