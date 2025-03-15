@@ -48,31 +48,37 @@ def validate(self, method=None):
 def autoname(doc, method=None):
     set_name(doc)
 
+import re
+import frappe
+from frappe.utils import today
+
 def set_name(doc):
     if 'param' in doc.naming_series:
-        year=frappe.defaults.get_global_default('fiscal_year')
-        month = re.findall(r'\d+', utils.today())[1]
+        year = frappe.defaults.get_global_default('fiscal_year')
+        month = re.findall(r'\d+', today())[1]
         vertical = doc.vertical
         type = doc.type
         company_code = ""
+
         if doc.company == "insmart Systems":
             company_code = "10000"
         elif doc.company == "insmart Systems India Private Limited":
             company_code = "20000"
         elif doc.company == "OIA TECHNOLOGIES PRIVATE LIMITED":
-            company_code = '30000'
+            company_code = "30000"
+
         sql = """SELECT MAX(sequence)
                     FROM `tab{0}`
                     WHERE company=%s AND sequence IS NOT NULL""".format(doc.doctype)
         max_icv = frappe.db.sql(sql, (doc.company,), as_dict=False)[0][0]
+
         if max_icv is not None:
             sequence = max_icv + 1
         else:
             sequence = 1
-        last_number=int(company_code) + sequence
-    
-        if last_number == 0:
-            last_number = int(company_code) + 1
 
-        doc.name = year + type + month + vertical + str(last_number)
+        last_number = f"{int(company_code) + sequence:05d}" 
+
+        doc.name = year + type + month + vertical + last_number
+
 
