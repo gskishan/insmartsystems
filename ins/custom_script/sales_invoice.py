@@ -64,7 +64,7 @@ def set_name(doc):
             company_code = "10000"
         elif doc.company == "insmart Systems India Private Limited":
             company_code = "20000"
-        elif doc.company == "OIA TECHNOLOGIES PRIVATE LIMITED":
+        elif doc.company == "Insmart Systems and Automation Private Limited":
             company_code = "30000"
 
         sql = """SELECT MAX(sequence)
